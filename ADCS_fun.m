@@ -10,7 +10,7 @@ As = 6*0.1^2; %sunlit area, [m^2]
 q = 0.6; %refectance factor
 P = (60 + 36)*60; %period time, [s]
 e = 2*50; %twice the ground sampling distance
-s = 102e3; %swath, [m]
+s = 8.9054e+04; %swath, [m]
 dist_center = 0.1; % cps - cm
 % Gravity torque
 Tg = 3*mu/(2*R^3)*abs(Izz - Ixx);
@@ -20,6 +20,6 @@ Ts = phi/c * As * (1+q)*dist_center;
 
 TD = Tg + Ts;
 
-h = TD * P * 0.707/4; %wheel momentum
+h = TD*1.25 * P * 0.707/4; %wheel momentum
 % Pointing accuracy
-theta_acc  = atan((e + s/2)/alt) - atan(s/2/alt);
+theta_acc  = atan((e + s/2)/alt) - atan(s/2/alt); % in RADIANS

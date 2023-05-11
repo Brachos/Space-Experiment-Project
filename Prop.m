@@ -14,7 +14,7 @@ classdef Prop
            end
        end
        function V = Volume(obj)
-           if size(obj.dim) == 3
+           if length(obj.dim) == 3
                V = obj.dim(1)*obj.dim(2)*obj.dim(3);
            else
                disp("Not enough dimensions arguments");

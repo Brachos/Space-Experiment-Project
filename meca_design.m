@@ -2,22 +2,31 @@ clc
 clear
 %% Data and constant
 % 6U Cube Sat
-X_6U = 0.2; %[m]
-Y_6U = 0.3; %[m]
-Z_6U = 0.1; %[m]
-
+X_6U = 366e-3; %[m]
+Y_6U = 226.3e-3; %[m]
+Z_6U = 100e-3; %[m]
+deployed = 0;
 %% Components
 % Position, x,y,z = (0,0,0) is geometric center of the satellite
 mm = [];
 xx = [];
-[optic, xx, mm] = Prop(0.13, [-0.05 0.015 0], xx, mm);
-[telecom, xx, mm] = Prop(0.875, [-0.05 -0.010 0], xx, mm);
-[ADCS, xx, mm] = Prop(3.1, [0 0 0], xx, mm);
-[therm_cont, xx, mm] = Prop(0.07, [-0.05 -0.075 0], xx, mm);
-[data_handling, xx, mm] = Prop(0.16, [0.05 0.075 0], xx, mm);
-[struture, xx, mm] = Prop(1.23, [0 0 0], xx, mm);
-[power, xx, mm] = Prop(0.104, [0.1 0 0], xx, mm);
-[battery, xx, mm] = Prop(0.268, [0.05 0 0], xx, mm);
+[optic, xx, mm] = Prop(5.860, [0.05315 0 -0.048], xx, mm);
+[battery, xx, mm] = Prop(0.700, [0.0475 0 0.094], xx, mm);
+[transceiver, xx, mm] = Prop(0.200, [-0.0195 0 -0.058], xx, mm);
+[ADCS, xx, mm] = Prop(1.230, [-0.057 0 0.013], xx, mm);
+[therm_cont, xx, mm] = Prop(0.07, [0 0 0], xx, mm);
+[data_handling, xx, mm] = Prop(2*0.208, [-0.02735 0 0.1075], xx, mm);
+[struture, xx, mm] = Prop(0.850, [0 0 0], xx, mm);
+[antenna,xx,mm] = Prop(0.02, [-0.03315 0 -0.033], xx, mm);
+if deployed
+    [solar_panel, xx, mm] = Prop(0.245, [0 0 0.366/2], xx, mm);
+else
+    [solar_panel, xx, mm] = Prop(0.245, [0 0 0.053], xx, mm);
+end
+power.dim = [];
+
+battery.dim = [89 95 14];
+Volume(battery);
 M = sum(mm);
 
 % Position center of gravity
@@ -30,3 +39,5 @@ d = sqrt(x_cg^2 + y_cg^2 + z_cg^2);
 I = [sum(mm.*(xx(:,2).^2 + xx(:,3).^2)) -sum(mm.*xx(:,1).*xx(:,2)) -sum(mm.*xx(:,1).*xx(:,3));
     -sum(mm.*xx(:,1).*xx(:,2)) sum(mm.*(xx(:,1).^2 + xx(:,3).^2)) -sum(mm.*xx(:,2).*xx(:,3));
     -sum(mm.*xx(:,1).*xx(:,3)) -sum(mm.*xx(:,2).*xx(:,3)) sum(mm.*(xx(:,1).^2 + xx(:,2).^2))];
+
+[TD, h, theta_acc] = ADCS_fun(max(diag(I)),min(diag(I)));
